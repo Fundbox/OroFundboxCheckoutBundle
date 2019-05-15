@@ -1,0 +1,5 @@
+config:
+  paths:
+    'fundboxcheckout/js/app/components/fundbox-checkout': 'fundboxcheckout/js/app/components/fundbox-checkout.js'
+    'fundboxcheckout/js/app/components/fundbox-checkout-component': 'fundboxcheckout/js/app/components/fundbox-checkout-component.js'
+    'fundboxcheckout/js/app/components/fundbox-checkout-payment-method-component': 'fundboxcheckout/js/app/components/fundbox-checkout-payment-method-component.js'

@@ -1,0 +1,13 @@
+services:
+  fundbox_checkout.transport.fundbox_client_factory:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxClientFactory
+    public: false
+    arguments:
+      - '@oro_integration.transport.rest.client_factory'
+
+  fundbox_checkout.transport.fundbox_checkout_transport_factory:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxCheckoutTransportFactory
+    public: false
+    arguments:
+      - '@fundbox_checkout.transport.fundbox_client_factory'
+

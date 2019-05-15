@@ -1,0 +1,6 @@
+fundbox_checkout_ajax:
+    resource:     "Fundbox/Bundle/FundboxCheckoutBundle/Controller/Frontend/AjaxFundboxController.php"
+    type:         annotation
+    prefix:       /fundbox
+    options:
+        frontend: true

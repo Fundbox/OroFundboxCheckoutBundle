@@ -1,0 +1,21 @@
+parameters:
+  fundbox_checkout.integration.type: 'fundbox_checkout'
+
+services:
+  fundbox_checkout.integration.channel_type:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Integration\FundboxCheckoutChannelType
+    tags: 
+      - { name: oro_integration.channel, type: %fundbox_checkout.integration.type% }
+
+  fundbox_checkout.integration.transport:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Integration\FundboxCheckoutTransport
+    tags:
+      - { name: oro_integration.transport, type: %fundbox_checkout.integration.type%, channel_type: %fundbox_checkout.integration.type% }
+
+  fundbox_checkout.form.type.settings.type:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Form\Type\FundboxCheckoutSettingsType
+    arguments:
+      - '@oro_security.form.data_transformer.factory.crypted_data'
+      - '@translator'
+    tags:
+      - { name: form.type }

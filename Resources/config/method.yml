@@ -1,0 +1,53 @@
+parameters:
+  fundbox_checkout.integration.type: 'fundbox_checkout'
+
+services:
+  fundbox_checkout.method.generator.identifier:
+    parent: oro_integration.generator.prefixed_identifier_generator
+    public: true
+    arguments:
+      - 'fundbox_checkout'
+
+  fundbox_checkout.method.config.factory:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigFactory
+    public: false
+    arguments:
+      - '@oro_locale.helper.localization'
+      - '@fundbox_checkout.method.generator.identifier'
+      - '@oro_security.encoder.default'
+  
+  fundbox_checkout.method.config.provider:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigProvider
+    arguments:
+      - '@doctrine'
+      - '@logger'
+      - '@fundbox_checkout.method.config.factory'
+
+  fundbox_checkout.method.view.factory:
+    public: false
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\View\FundboxCheckoutViewFactory
+
+  fundbox_checkout.method.view.provider:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\View\FundboxCheckoutViewProvider
+    arguments:
+      - '@fundbox_checkout.method.view.factory'
+      - '@fundbox_checkout.method.config.provider'
+      - '@fundbox_checkout.transport.fundbox_checkout_transport_factory'
+    tags:
+      - { name: oro_payment.payment_method_view_provider }
+    
+  fundbox_checkout.method.factory:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\FundboxCheckoutMethodFactory
+
+
+  fundbox_checkout.method.provider:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Method\FundboxCheckoutMethodProvider
+    public: false
+    arguments:
+      - '@fundbox_checkout.method.factory'
+      - '@fundbox_checkout.transport.fundbox_checkout_transport_factory'
+      - '@fundbox_checkout.method.config.provider'
+      - '@logger'
+    tags:
+      - { name: oro_payment.payment_method_provider }
+      - { name: monolog.logger, channel: oro_fbx_checkout }

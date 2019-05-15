@@ -1,0 +1,3 @@
+# src/Fundbox/Bundle/FundboxCheckoutBundle/Resources/config/oro/bundles.yml
+bundles:
+    - Fundbox\Bundle\FundboxCheckoutBundle\FundboxCheckoutBundle

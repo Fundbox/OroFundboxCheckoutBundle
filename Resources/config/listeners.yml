@@ -1,0 +1,12 @@
+services:
+    fundbox_checkout.event_listener.callback.payment:
+        class: 'Fundbox\Bundle\FundboxCheckoutBundle\EventListener\Callback\PaymentCallbackListener'
+        lazy: true
+        arguments:
+            - '@fundbox_checkout.method.provider'
+            - '@fundbox_checkout.method.config.provider'
+        calls:
+            - ['setLogger', ['@logger']]
+        tags:
+            - { name: kernel.event_listener, event: oro_payment.callback.return, method: onReturn }
+            - { name: monolog.logger, channel: oro_fbx_checkout }

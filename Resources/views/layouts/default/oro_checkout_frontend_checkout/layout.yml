@@ -1,0 +1,9 @@
+layout:
+    actions:
+        - '@setBlockTheme':
+              themes: 'layout.html.twig'
+
+        - '@add':
+            id: oro_checkout_custom_script
+            parentId: head
+            blockType: container

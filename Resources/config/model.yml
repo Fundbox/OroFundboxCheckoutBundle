@@ -1,0 +1,8 @@
+services:
+  fundbox_checkout.model.order_details:
+    class: Fundbox\Bundle\FundboxCheckoutBundle\Model\OrderDetails
+    arguments:
+      - '@oro_pricing.subtotal_processor.total_processor_provider'
+      - '@oro_currency.rounding.price_rounding_service'
+      - '@oro_pricing.provider.matching_price'
+      - '@oro_pricing.model.product_price_scope_criteria_request_handler'

@@ -1,0 +1,12 @@
+{% block _payment_methods_fundbox_checkout_widget %}
+    <div class="{{ class_prefix }}-form__payment-methods"
+        data-page-component-module="fundboxcheckout/js/app/components/fundbox-checkout-payment-method-component"
+        data-page-component-options="{{ {
+            publicKey: view.options.publicKey,
+            envUrl: view.options.envUrl
+        }|json_encode }}">
+        <p>{{ 'fundbox.checkout.payment_method_messages.pay_with_net'|trans }}{{ view.options.gracePeriod }}. 
+        {{ 'fundbox.checkout.payment_method_messages.after'|trans }} {{ view.options.gracePeriod }} {{ 'fundbox.checkout.payment_method_messages.days_extend'|trans }}</p>
+        <p>{{ 'fundbox.checkout.payment_method_messages.disclaimer'|trans }} <a class="fbx-learn-more-link" id="fbx-learn-more-link" href="#">{{ 'fundbox.checkout.payment_method_messages.learn_more'|trans }}</a></p>
+    </div>
+{% endblock %}

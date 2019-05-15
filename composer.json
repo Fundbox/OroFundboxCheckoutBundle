@@ -1,0 +1,15 @@
+{
+  "name": "fundbox/fundbox-checkout-bundle",
+  "description": "Fundbox Checkout Integration for OroCommerce",
+  "license": "OSL-3.0",
+  "keywords": ["Oro", "Fundbox", "Fundbox Checkout", "Integration"],
+  "authors": [
+      {
+          "name": "Fundbox, Inc",
+          "homepage": "https://fundbox.com/"
+      }
+  ],
+  "require": {
+      "oro/commerce": "3.1.*"
+  }
+}

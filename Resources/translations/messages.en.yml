@@ -1,0 +1,46 @@
+fundbox:
+  checkout:
+    settings:
+      labels.label: 'Label'
+      short_labels.label: 'Short Label'
+      transport.label: 'Fundbox Credit'
+      environment:
+        label: 'Environment'
+        tooltip: Keep 'Environment' set to 'Test' for development and testing
+        types:
+          testing: 'Testing'
+          production: 'Production'
+      production_public_key:
+        label: 'Production Public Key'
+        tooltip: Enter the keys you’ve received from Fundbox Pay
+      production_private_key:
+        label: 'Production Private Key'
+        tooltip: Enter the keys you’ve received from Fundbox Pay
+      test_public_key:
+        label: 'Test Public Key'
+        tooltip: Enter the keys you’ve received from Fundbox Pay
+      test_private_key:
+        label: 'Test Private Key'
+        tooltip: Enter the keys you’ve received from Fundbox Pay
+      log_enabled:
+        label: 'Enable Log'
+        tooltip: 'Enable Log'
+      payment_action:
+        label: 'Payment Action'
+        tooltip: Select authorization if you regularly adjust the final order amount
+        types:
+          capture: 'Capture'
+          authorize: 'Authorize'
+      minimum_order:
+        label: 'Minimum Order Total'
+        tooltip: The minimum order at Fundbox is $10
+      maximum_order:
+        label: 'Maximum Order Total'
+        tooltip: The maximum order at Fundbox is $100,000
+    channel_type.label: 'Fundbox Credit'
+    payment_method_messages:
+      pay_with_net: 'Pay with free Net-'
+      after: 'After'
+      days_extend: 'days, extend your terms week-by-week for a flat fee.'
+      disclaimer: 'Extended terms are not supported in all states'
+      learn_more: 'Learn more'

@@ -66,4 +66,4 @@ Fundbox facilitates transactions between B2B sellers and the buyers they serve, 
 
 Fundbox’s mission is to help business owners thrive by offering credit at the moment of need. Since its founding in 2013, Fundbox has worked with over 100,000 businesses in North America and has been awarded various honors by Forbes, PYMNTS, CB Insights, and other publications as a leader in its space.
 
-`*` Extended financing is available in most states. For details click here.
+`*` Extended financing is available in most states.

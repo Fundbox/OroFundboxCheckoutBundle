@@ -6,6 +6,7 @@ use Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigInte
 use Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxCheckoutTransport;
 use Oro\Bundle\PaymentBundle\Context\PaymentContextInterface;
 use Oro\Bundle\PaymentBundle\Method\View\PaymentMethodViewInterface;
+use Psr\Log\LoggerInterface;
 
 class FundboxCheckoutView implements PaymentMethodViewInterface
 {
@@ -20,15 +21,23 @@ class FundboxCheckoutView implements PaymentMethodViewInterface
     protected $fundboxCheckoutTransport;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param FundboxCheckoutConfigInterface $config
      * @param FundboxCheckoutTransport $fundboxCheckoutTransport
+     * @param LoggerInterface $logger
      */
     public function __construct(
         FundboxCheckoutConfigInterface $config,
-        FundboxCheckoutTransport $fundboxCheckoutTransport
+        FundboxCheckoutTransport $fundboxCheckoutTransport,
+        LoggerInterface $logger
     ) {
         $this->config = $config;
         $this->fundboxCheckoutTransport = $fundboxCheckoutTransport;
+        $this->logger = $logger;
     }
 
     /**

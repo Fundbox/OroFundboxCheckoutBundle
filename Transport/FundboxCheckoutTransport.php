@@ -37,4 +37,9 @@ class FundboxCheckoutTransport
             ['amount_cents' => $amountCents]
         );
     }
+
+    public function sanity()
+    {
+        return $this->client->post('sanity', []);
+    }
 }

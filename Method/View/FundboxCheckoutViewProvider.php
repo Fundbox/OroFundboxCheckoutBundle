@@ -6,6 +6,7 @@ use Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigInte
 use Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigProviderInterface;
 use Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxCheckoutTransportFactory;
 use Oro\Bundle\PaymentBundle\Method\View\AbstractPaymentMethodViewProvider;
+use Psr\Log\LoggerInterface;
 
 class FundboxCheckoutViewProvider extends AbstractPaymentMethodViewProvider
 {
@@ -19,18 +20,26 @@ class FundboxCheckoutViewProvider extends AbstractPaymentMethodViewProvider
     private $fundboxCheckoutTransportFactory;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param FundboxCheckoutViewFactoryInterface $factory
      * @param FundboxCheckoutConfigProviderInterface $configProvider
      * @param FundboxCheckoutTransportFactory $fundboxCheckoutTransportFactory
+     * @param LoggerInterface $logger
      */
     public function __construct(
         FundboxCheckoutViewFactoryInterface $factory,
         FundboxCheckoutConfigProviderInterface $configProvider,
-        FundboxCheckoutTransportFactory $fundboxCheckoutTransportFactory
+        FundboxCheckoutTransportFactory $fundboxCheckoutTransportFactory,
+        LoggerInterface $logger
     ) {
         $this->factory = $factory;
         $this->configProvider = $configProvider;
         $this->fundboxCheckoutTransportFactory = $fundboxCheckoutTransportFactory;
+        $this->logger = $logger;
         
         parent::__construct();
     }
@@ -53,7 +62,11 @@ class FundboxCheckoutViewProvider extends AbstractPaymentMethodViewProvider
     {
         $this->addView(
             $config->getPaymentMethodIdentifier(),
-            $this->factory->create($config, $this->fundboxCheckoutTransportFactory->create($config))
+            $this->factory->create(
+                $config,
+                $this->fundboxCheckoutTransportFactory->create($config),
+                $this->logger
+            )
         );
     }
 }

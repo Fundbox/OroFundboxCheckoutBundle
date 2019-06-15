@@ -20,7 +20,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FundboxCheckoutSettingsType extends AbstractType
-{
+{   
     const BLOCK_PREFIX = 'fbx_setting_setting_type';
 
     /**
@@ -59,7 +59,7 @@ class FundboxCheckoutSettingsType extends AbstractType
                     'required' => true,
                     'constraints' => [new NotBlank()],
                     'client_validation' => true,
-                    'disabled' => true,
+                    'attr' => array('readonly' => true),
                 ]
             )
             ->add(
@@ -70,7 +70,7 @@ class FundboxCheckoutSettingsType extends AbstractType
                     'required' => true,
                     'constraints' => [new NotBlank()],
                     'client_validation' => true,
-                    'disabled' => true,
+                    'attr' => array('readonly' => true),
                 ]
             )
             ->add(
@@ -188,7 +188,7 @@ class FundboxCheckoutSettingsType extends AbstractType
         $form = $event->getForm();
         if ($form->has('labels')) {
             $defaultValue = new LocalizedFallbackValue();
-            $defaultValue->setString('Fundbox Credit');
+            $defaultValue->setString('Fundbox Credit (Free Net Terms)');
             $form->get('labels')->setData(new ArrayCollection([$defaultValue])); // Set default labels and short labels
         }
         if ($form->has('shortLabels')) {

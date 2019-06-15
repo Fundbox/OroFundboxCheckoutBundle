@@ -4,10 +4,12 @@ namespace Fundbox\Bundle\FundboxCheckoutBundle\Method;
 
 use Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigInterface;
 use Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxCheckoutTransport;
+use Oro\Bundle\CheckoutBundle\Entity\Checkout;
 use Oro\Bundle\LocaleBundle\Model\AddressInterface;
 use Oro\Bundle\PaymentBundle\Context\PaymentContextInterface;
 use Oro\Bundle\PaymentBundle\Entity\PaymentTransaction;
 use Oro\Bundle\PaymentBundle\Method\PaymentMethodInterface;
+use Oro\Bundle\PricingBundle\SubtotalProcessor\Provider\AbstractSubtotalProvider;
 use Psr\Log\LoggerInterface;
 
 class FundboxCheckoutMethod implements PaymentMethodInterface
@@ -42,15 +44,18 @@ class FundboxCheckoutMethod implements PaymentMethodInterface
     /**
      * @param FundboxCheckoutConfigInterface $config
      * @param FundboxCheckoutTransport $fundboxCheckoutTransport
+     * @param AbstractSubtotalProvider $subtotalProvider
      * @param LoggerInterface $logger
      */
     public function __construct(
         FundboxCheckoutConfigInterface $config,
         FundboxCheckoutTransport $fundboxCheckoutTransport,
+        AbstractSubtotalProvider $subtotalProvider,
         LoggerInterface $logger
     ) {
         $this->config = $config;
         $this->fundboxCheckoutTransport = $fundboxCheckoutTransport;
+        $this->subtotalProvider = $subtotalProvider;
         $this->logger = $logger;
     }
 
@@ -99,7 +104,7 @@ class FundboxCheckoutMethod implements PaymentMethodInterface
         $this->fundboxCheckoutTransport->applyOrder($transactionToken, $amountCents);
         $this->logger->debug('FBX: applied order successfully');
 
-        if($sourcePaymentTransaction) {
+        if ($sourcePaymentTransaction) {
             $this->finishSuccessfulTransaction($sourcePaymentTransaction);
             $this->logger->debug('FBX: finished authorized transaction');
         }
@@ -152,7 +157,11 @@ class FundboxCheckoutMethod implements PaymentMethodInterface
      */
     public function isApplicable(PaymentContextInterface $context)
     {
-        return $this->isCurrencySupported($context->getCurrency()) &&
+        $checkoutTotalAmount = $this->getCheckoutTotalAmount($context->getSourceEntity());
+
+        return $this->areKeysValid() &&
+        $this->isTotalValid($checkoutTotalAmount) &&
+        $this->isCurrencySupported($context->getCurrency()) &&
         $this->areAddressesSupported($context->getBillingAddress(), $context->getShippingAddress());
     }
 
@@ -180,6 +189,24 @@ class FundboxCheckoutMethod implements PaymentMethodInterface
     }
 
     /**
+     *
+     * @return boolean
+     */
+    private function areKeysValid()
+    {
+        try {
+            $this->fundboxCheckoutTransport->sanity();
+        } catch (\Throwable $th) {
+            $this->logger->error(
+                "FBX: kyes aren't valid for env: " . $this->config->getEnvironment() . 
+                " message: " . $th->getMessage()
+            );
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @param string $currency
      *
      * @return boolean
@@ -188,4 +215,27 @@ class FundboxCheckoutMethod implements PaymentMethodInterface
     {
         return in_array($currency, $this->supportedCurrencyCodes);
     }
+
+    /**
+     * @param float $total
+     *
+     * @return boolean
+     */
+    private function isTotalValid($total)
+    {
+        return $total >= $this->config->getMinimumOrder() && $total <= $this->config->getMaximumOrder();
+    }
+
+    /**
+     * @param Checkout $checkout
+     *
+     * @return float
+     */
+    private function getCheckoutTotalAmount($checkout)
+    {
+        $subtotals = $this->subtotalProvider->getSubtotals($checkout);
+        $total = $this->subtotalProvider->getTotalForSubtotals($checkout, $subtotals);
+        return $total->getAmount();
+    }
+
 }

@@ -5,8 +5,9 @@
             publicKey: view.options.publicKey,
             envUrl: view.options.envUrl
         }|json_encode }}">
-        <p>{{ 'fundbox.checkout.payment_method_messages.pay_with_net'|trans }}{{ view.options.gracePeriod }}. 
-        {{ 'fundbox.checkout.payment_method_messages.after'|trans }} {{ view.options.gracePeriod }} {{ 'fundbox.checkout.payment_method_messages.days_extend'|trans }}</p>
-        <p>{{ 'fundbox.checkout.payment_method_messages.disclaimer'|trans }} <a class="fbx-learn-more-link" id="fbx-learn-more-link" href="#">{{ 'fundbox.checkout.payment_method_messages.learn_more'|trans }}</a></p>
+        <p>{{ 'fundbox.checkout.payment_method_messages.description_preffix'|trans }}{{ view.options.gracePeriod }} 
+        {{ 'fundbox.checkout.payment_method_messages.description_suffix'|trans }}
+        <a class="fbx-learn-more-link" id="fbx-learn-more-link" href="#">{{ 'fundbox.checkout.payment_method_messages.learn_more'|trans }}</a>
+        </p>
     </div>
 {% endblock %}

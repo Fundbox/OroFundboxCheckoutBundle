@@ -3,7 +3,7 @@ fundbox:
     settings:
       labels.label: 'Label'
       short_labels.label: 'Short Label'
-      transport.label: 'Fundbox Credit'
+      transport.label: 'Fundbox Credit (Free Net Terms)'
       environment:
         label: 'Environment'
         tooltip: Keep 'Environment' set to 'Test' for development and testing
@@ -39,8 +39,6 @@ fundbox:
         tooltip: The maximum order at Fundbox is $100,000
     channel_type.label: 'Fundbox Credit'
     payment_method_messages:
-      pay_with_net: 'Pay with free Net-'
-      after: 'After'
-      days_extend: 'days, extend your terms week-by-week for a flat fee.'
-      disclaimer: 'Extended terms are not supported in all states'
+      description_preffix: 'Get Net-'
+      description_suffix: ' terms on business purchases when you pay with Fundbox. Need more time? You can pay in up to 52 weeks in most U.S. states.'
       learn_more: 'Learn more'

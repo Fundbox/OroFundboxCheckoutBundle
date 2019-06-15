@@ -33,8 +33,10 @@ services:
       - '@fundbox_checkout.method.view.factory'
       - '@fundbox_checkout.method.config.provider'
       - '@fundbox_checkout.transport.fundbox_checkout_transport_factory'
+      - '@logger'
     tags:
       - { name: oro_payment.payment_method_view_provider }
+      - { name: monolog.logger, channel: oro_fbx_checkout }
     
   fundbox_checkout.method.factory:
     class: Fundbox\Bundle\FundboxCheckoutBundle\Method\FundboxCheckoutMethodFactory
@@ -47,6 +49,7 @@ services:
       - '@fundbox_checkout.method.factory'
       - '@fundbox_checkout.transport.fundbox_checkout_transport_factory'
       - '@fundbox_checkout.method.config.provider'
+      - '@oro_pricing.subtotal_processor.total_processor_provider'
       - '@logger'
     tags:
       - { name: oro_payment.payment_method_provider }

@@ -7,6 +7,7 @@ use Fundbox\Bundle\FundboxCheckoutBundle\Method\Config\FundboxCheckoutConfigProv
 use Fundbox\Bundle\FundboxCheckoutBundle\Method\FundboxCheckoutMethodFactoryInterface;
 use Fundbox\Bundle\FundboxCheckoutBundle\Transport\FundboxCheckoutTransportFactory;
 use Oro\Bundle\PaymentBundle\Method\Provider\AbstractPaymentMethodProvider;
+use Oro\Bundle\PricingBundle\SubtotalProcessor\Provider\AbstractSubtotalProvider;
 use Psr\Log\LoggerInterface;
 
 class FundboxCheckoutMethodProvider extends AbstractPaymentMethodProvider
@@ -25,6 +26,11 @@ class FundboxCheckoutMethodProvider extends AbstractPaymentMethodProvider
     private $configProvider;
 
     /**
+     * @var AbstractSubtotalProvider
+     */
+    protected $subtotalProvider;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -33,17 +39,20 @@ class FundboxCheckoutMethodProvider extends AbstractPaymentMethodProvider
      * @param FundboxCheckoutMethodFactoryInterface $factory
      * @param FundboxCheckoutTransportFactory $fundboxCheckoutTransportFactory
      * @param FundboxCheckoutConfigProviderInterface $configProvider
+     * @param AbstractSubtotalProvider $subtotalProvider
      * @param LoggerInterface $logger
      */
     public function __construct(
         FundboxCheckoutMethodFactoryInterface $factory,
         FundboxCheckoutTransportFactory $fundboxCheckoutTransportFactory,
         FundboxCheckoutConfigProviderInterface $configProvider,
+        AbstractSubtotalProvider $subtotalProvider,
         LoggerInterface $logger
     ) {
         $this->factory = $factory;
         $this->fundboxCheckoutTransportFactory = $fundboxCheckoutTransportFactory;
         $this->configProvider = $configProvider;
+        $this->subtotalProvider = $subtotalProvider;
         $this->logger = $logger;
 
         parent::__construct();
@@ -70,6 +79,7 @@ class FundboxCheckoutMethodProvider extends AbstractPaymentMethodProvider
             $this->factory->create(
                 $config,
                 $this->fundboxCheckoutTransportFactory->create($config),
+                $this->subtotalProvider,
                 $this->logger
             )
         );

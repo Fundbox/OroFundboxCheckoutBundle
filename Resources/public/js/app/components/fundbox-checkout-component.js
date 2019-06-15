@@ -26,11 +26,6 @@ define(function (require) {
     /**
      * @property {}
      */
-    fbxCheckout: null,
-
-    /**
-     * @property {}
-     */
     orderDetails: null,
 
     /**
@@ -62,18 +57,16 @@ define(function (require) {
       var orderId = this.getOrderId();
       this.options = _.extend({}, this.options, options, { orderId: orderId });
       this.updateOrderDetailsAndPM();
-      this.fbxCheckout = FbxChexckout.configure({ 
-        fbxKey: this.options.publicKey,
-        env: this.options.envUrl,
-        onComplete: this.handleFbxCheckoutComplete.bind(this)
-      });
 
       this.$form = $('[data-role=checkout-content]').find('form');
-      this.$form.on('submit', this.handleSubmit.bind(this));
+      this.handleSubmit =  this.handleSubmit.bind(this);
+      this.$form.on('submit', this.handleSubmit);
       this._moveLastEventToFirst(this.$form, 'submit');
       mediator.on('frontend:coupons:changed', this.updateOrderDetailsAndPM, this);
       mediator.on('checkout-content:updated', this.updateOrderDetailsAndPM, this);
       mediator.on('checkout:place-order:response', this.handleResponseRedirect, this);
+      mediator.on('checkout:payment:method:changed', this.handlePaymentMethodChanged, this);
+      mediator.on('checkout-content:initialized', this.handleCheckoutContentInit, this);
     },
 
     _moveLastEventToFirst: function _moveEventToFirst($element, event) {
@@ -82,17 +75,28 @@ define(function (require) {
       eventsList.splice(0, 0, lastEvent);
     },
 
+    handleCheckoutContentInit: function() {
+      mediator.trigger('checkout:payment:method:refresh');
+    },
+
+    handlePaymentMethodChanged: function handlePaymentMethodChanged(eventData) {
+      this.paymentMethod = eventData.paymentMethod;
+    },
+
     handleResponseRedirect: function handleResponseRedirect(event) {
-      mediator.execute('showLoading');
-      mediator.execute(
-        'redirectTo',
-        { url: event.responseData.returnUrl + 
-            '?' + TRANSACTION_TOKEN_KEY + 
-            '=' + this.transactionToken
-        },
-        { redirect: true }
-      );
-      this.transactionToken = null;
+      if (this.transactionToken && event.responseData.paymentMethod === this.options.paymentMethod) {
+        event.stopped = true;
+        mediator.execute('showLoading');
+        mediator.execute(
+          'redirectTo',
+          { url: event.responseData.returnUrl + 
+              '?' + TRANSACTION_TOKEN_KEY + 
+              '=' + this.transactionToken
+          },
+          { redirect: true }
+        );
+        this.transactionToken = null;
+      }
     },
 
     getOrderId: function getOrderId() {
@@ -101,7 +105,7 @@ define(function (require) {
 
     setOrderDetailsAndPM: function setOrderDetailsAndPM(data) {
       this.orderDetails = data.orderDetails;
-      this.paymentMethod = data.paymentMethod;
+      this.paymentMethod = data.paymentMethod || this.paymentMethod;
     },
 
     updateOrderDetailsAndPM: function updateOrderDetailsAndPM() {
@@ -121,10 +125,19 @@ define(function (require) {
      * @param {Object} eventData
      */
     handleSubmit: function handleCheckoutSubmit(e) {
-      if (this.paymentMethod === this.options.paymentMethod && !this.transactionToken) {
+      if (
+        this.paymentMethod &&
+        this.paymentMethod === this.options.paymentMethod && 
+        !this.transactionToken
+      ) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        this.fbxCheckout.open({
+        var fbxCheckout = FbxChexckout.configure({ 
+          fbxKey: this.options.publicKey,
+          env: this.options.envUrl,
+          onComplete: this.handleFbxCheckoutComplete.bind(this)
+        });
+        fbxCheckout.open({
           orderDetails: _.extend({}, this.orderDetails, { transaction_type: this.options.transactionType })
         });
         mediator.execute('hideLoading');
@@ -143,11 +156,13 @@ define(function (require) {
       if (this.disposed) {
         return;
       }
-      this.fbxCheckout = null;
       this.transactionToken = null;
+      this.$form.off('submit', this.handleSubmit);
       mediator.off('frontend:coupons:changed', this.updateOrderDetailsAndPM, this);
       mediator.off('checkout-content:updated', this.updateOrderDetailsAndPM, this);
       mediator.off('checkout:place-order:response', this.handleSubmit, this);
+      mediator.off('checkout:payment:method:changed', this.handlePaymentMethodChanged, this);
+      mediator.off('checkout-content:initialized', this.handleCheckoutContentInit, this);
 
       FundboxCheckoutComponent.__super__.dispose.call(this);
     }

@@ -136,7 +136,7 @@ class OrderDetails
             $product = $lineItem->getProduct();
 
             $name = $product->getDefaultName() ? $product->getDefaultName()->getString() : '';
-            $description = $product->getDefaultShortDescription()->getString() ?? '';
+            $description = $product->getDefaultShortDescription() ? $product->getDefaultShortDescription()->getString() : '';
             $sku = $product->getSku();
             $quantity = $lineItem->getQuantity();
             $matchingPrice = $this->getMatchingPrice($matchingPrices, $mappedLineItems[$i]);

@@ -41,4 +41,5 @@ fundbox:
     payment_method_messages:
       description_preffix: 'Get Net-'
       description_suffix: ' terms on business purchases when you pay with Fundbox. Need more time? You can pay in up to 52 weeks in most U.S. states.'
+      description: 'Pay with interest-free net terms through Fundbox. It’s easy to sign up.'
       learn_more: 'Learn more'
